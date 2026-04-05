@@ -56,7 +56,7 @@ const to_right = () => {
 // onMounted(() => {
 //     setInterval(() => {
 //         currentSlide.value = (currentSlide.value + 1) % totalSlides.value;
-//     }, 3000);
+//     }, 10000);
 // });
 </script>
 
@@ -89,14 +89,13 @@ const to_right = () => {
             </div>
         </div>
     </div>
-    <div class="bodytest"></div>
 </template>
 
 <style scoped>
 .container {
     width: 100%;
     height: 95vh;
-    background: url('../assets/backgrounds/bg2.jpg');
+    background: url('../assets/backgrounds/bg3.jpg');
 }
 
 .bg-text h1 {
@@ -210,8 +209,5 @@ img {
     background: linear-gradient(transparent,var(--bg));
     z-index: 200
 }
-.bodytest{
-    width: 100%;
-    height: 200vh;
-}
+
 </style>

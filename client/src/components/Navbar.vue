@@ -42,7 +42,7 @@ img {
     padding: 16px;
     width: 100%;
     height: 100%;
-    background: #0e0e0e00;
+    background: linear-gradient(#0e0e0e40, transparent);
     backdrop-filter: blur(10px);
 }
 

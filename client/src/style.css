@@ -49,3 +49,13 @@ ul{
 .btn:hover{
     background: var(--hover);
 }
+
+a{
+    color: var(--primary);
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+a:hover{
+    color: var(--hover);
+}
