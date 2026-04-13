@@ -2,6 +2,7 @@ import express, { urlencoded } from 'express';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.routes.js';   // Authentication Routes
 import friendRouter from './routes/friend.routes.js';
+import roomRouter from './routes/room.routes.js';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/api/auth', userRoutes);
 app.use('/api/friend', friendRouter);
+app.use('/api/room', roomRouter);
 // Default main route;
 app.get('/', (req, res) => {
     res.send('Hello, World');
