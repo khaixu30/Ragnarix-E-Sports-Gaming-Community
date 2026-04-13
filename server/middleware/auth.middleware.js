@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 const authMiddleware = (req, res, next) => {
     try{
         const authHeader = req.headers.authorization;
-        if(!authHeader || !authHeader.startsWith("Brearer ")){
+        if(!authHeader || !authHeader.startsWith("Bearer ")){
             return res.status(401).json({success: false, message: "Access Denied. No token provided."});
         }
 
@@ -19,4 +19,4 @@ const authMiddleware = (req, res, next) => {
     }
 }
 
-export default {authMiddleware};
+export default authMiddleware;

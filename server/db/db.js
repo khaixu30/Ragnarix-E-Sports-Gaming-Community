@@ -7,4 +7,4 @@ const pool = new Pool({
     database: "fragmint_db"
 });
 
-export default { pool };
+export default pool ;

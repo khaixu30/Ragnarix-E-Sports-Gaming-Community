@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import pool from '../db/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -7,9 +7,9 @@ import authMiddleware from '../middleware/auth.middleware.js';
 const userRouter = Router();
 
 userRouter.post('/signup', async (req, res) => {
-    try{
+    try {
 
-        const { username, email, password, full_name, phone_number} = req.body;
+        const { username, email, password, full_name, phone_number } = req.body;
         const password_hash = await bcrypt.hash(password, 10);
 
         const _check_1 = await pool.query(
@@ -17,7 +17,7 @@ userRouter.post('/signup', async (req, res) => {
             [email]
         )
 
-        if(_check_1.rows.length !== 0){
+        if (_check_1.rows.length !== 0) {
             return res.status(400).json({
                 success: false,
                 message: "Email already in use."
@@ -29,7 +29,7 @@ userRouter.post('/signup', async (req, res) => {
             [username]
         )
 
-        if(_check_2.rows.length !== 0){
+        if (_check_2.rows.length !== 0) {
             return res.status(400).json({
                 success: false,
                 message: "Username not available."
@@ -47,15 +47,18 @@ userRouter.post('/signup', async (req, res) => {
             username: newUser.rows[0].username
         }
 
-        const token = jwt.sign(payload,process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(201).json({
-            success: true, 
-            message: 'User Created Successfully', 
+            success: true,
+            message: 'User Created Successfully',
             data: {
                 id: newUser.rows[0].id,
                 username: newUser.rows[0].username,
                 email: newUser.rows[0].email,
+                profile_pic: newUser.rows[0].profile_pic,
+                account_type: newUser.rows[0].account_type,
+                about_info: newUser.rows[0].about_info,
                 name: newUser.rows[0].name,
                 full_name: newUser.rows[0].full_name,
                 phone_number: newUser.rows[0].phone_number,
@@ -64,21 +67,21 @@ userRouter.post('/signup', async (req, res) => {
             },
             token
         });
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({ success: false, message: 'Internal Server Error'});
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 
 userRouter.post('/login', async (req, res) => {
-    try{
-        const { username, email, password} = req.body;
+    try {
+        const { username, email, password } = req.body;
         const foundUser = await pool.query(
             "SELECT * FROM users WHERE username = $1 OR email = $1;",
             [username || email]
         );
 
-        if(foundUser.rows.length === 0){
+        if (foundUser.rows.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: 'Username not found'
@@ -86,7 +89,7 @@ userRouter.post('/login', async (req, res) => {
         }
 
         const isMatched = await bcrypt.compare(password, foundUser.rows[0].password_hash);
-        if(!isMatched){
+        if (!isMatched) {
             return res.status(401).json({
                 success: false,
                 message: 'Incorrect Username or Password'
@@ -99,15 +102,18 @@ userRouter.post('/login', async (req, res) => {
             username: foundUser.rows[0].username
         }
 
-        const token = jwt.sign(payload,process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({
-            success: true, 
-            message: 'Login Successful.', 
+            success: true,
+            message: 'Login Successful.',
             data: {
                 id: foundUser.rows[0].id,
                 username: foundUser.rows[0].username,
                 email: foundUser.rows[0].email,
+                profile_pic: foundUser.rows[0].profile_pic,
+                account_type: foundUser.rows[0].account_type,
+                about_info: foundUser.rows[0].about_info,
                 name: foundUser.rows[0].name,
                 full_name: foundUser.rows[0].full_name,
                 phone_number: foundUser.rows[0].phone_number,
@@ -117,7 +123,8 @@ userRouter.post('/login', async (req, res) => {
             token
         });
 
-    }catch(err){
+    } catch (err) {
+        console.log(err)
         res.status(500).json({
             success: false,
             message: "Internal Server Error!"
@@ -126,14 +133,14 @@ userRouter.post('/login', async (req, res) => {
 });
 
 userRouter.get('/:user_id', authMiddleware, async (req, res) => {
-    try{
+    try {
         const { user_id } = req.params;
         const foundUser = await pool.query(
             "SELECT * FROM users WHERE id = $1;",
             [user_id]
-        )
+        );
 
-        if(foundUser.rows.length === 0){
+        if (foundUser.rows.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: "User not found!"
@@ -147,14 +154,18 @@ userRouter.get('/:user_id', authMiddleware, async (req, res) => {
                 id: foundUser.rows[0].id,
                 username: foundUser.rows[0].username,
                 email: foundUser.rows[0].email,
+                profile_pic: foundUser.rows[0].profile_pic,
+                account_type: foundUser.rows[0].account_type,
+                about_info: foundUser.rows[0].about_info,
                 name: foundUser.rows[0].name,
                 full_name: foundUser.rows[0].full_name,
                 phone_number: foundUser.rows[0].phone_number,
                 account_type: foundUser.rows[0].account_type,
                 is_verified: foundUser.rows[0].is_verified
             }
-        })
-    }catch(err){
+        });
+    } catch (err) {
+        console.log(err);
         res.status(500).json({
             success: false,
             message: "Internal Server Error!"

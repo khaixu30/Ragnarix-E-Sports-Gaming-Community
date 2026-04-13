@@ -12,7 +12,7 @@ app.use(express.json());
 // Using routes;
 
 app.use('/api/auth', userRoutes);
-app.use('/api/firend', friendRouter);
+app.use('/api/friend', friendRouter);
 // Default main route;
 app.get('/', (req, res) => {
     res.send('Hello, World');

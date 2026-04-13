@@ -45,7 +45,7 @@ CREATE TABLE friends(
 -- 1. Rooms Table
 CREATE TABLE rooms(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    admin_id UUID REFERENCES users(id) NOT NULL ON DELETE CASCADE,
+    admin_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     room_name VARCHAR(255) NOT NULL,
     room_logo_url TEXT,
     description TEXT,
@@ -140,7 +140,7 @@ CREATE TABLE team_members(
 CREATE TABLE registrations(
     event_id UUID REFERENCES events(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    team_id UUID REFERENCES teams(id) DEFAULT NULL ON DELETE CASCADE,
+    team_id UUID REFERENCES teams(id) ON DELETE CASCADE DEFAULT NULL,
     payment_status VARCHAR(10) CHECK (payment_status IN ('Pending', 'Paid', 'Failed')) DEFAULT 'Pending',
     transaction_id TEXT,
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

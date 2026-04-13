@@ -28,6 +28,8 @@ const move_left = () => {
                 <h1>Featured</h1>
             </div>
             <div class="cards-container">
+            <div class="faded-left"></div>
+            <div class="faded-right"></div>
             <button class="left" @click="move_left"> < </button>
                 <div class="card-slider" :style="{ transform: `translateX(${offset}px)` }">
                     <GameCard />
@@ -52,6 +54,7 @@ const move_left = () => {
 .container{
     width: 100%;
     padding: 16px;
+    margin: 24px 0;
 }
 
 .heading{
@@ -118,4 +121,32 @@ h1{
     z-index: 100;
     cursor: pointer;
 }   
+
+.faded-left{
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(to right, var(--bg), transparent);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+.faded-left{
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(to right, var(--bg), transparent);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+.faded-right{
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(to left, var(--bg), transparent);
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
+}
 </style>
