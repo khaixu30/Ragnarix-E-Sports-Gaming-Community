@@ -4,19 +4,20 @@ import authMiddleware from '../middleware/auth.middleware.js';
 import adminAccessMiddleware from '../middleware/room.middleware.js';
 import bcrypt from 'bcrypt'
 
-const roomRouter = Router();
+const memberRouter = Router();
 
-roomRouter.post('/create', authMiddleware, async (req, res) => {
+memberRouter.post('/create/:room_id', authMiddleware, async (req, res) => {
     try {
-        const { room_name, visibility } = req.body;
-        const admin_id = req.user._id;
+        const { room_id } = req.params
+        const user_id = req.user._id;
+        const role = 'Member'
 
-        const newRoom = await pool.query(
-            "INSERT INTO rooms (admin_id, room_name, visibility) VALUES ($1, $2, $3) RETURNING *;",
-            [admin_id, room_name, visibility]
+        const newMember = await pool.query(
+            "INSERT INTO rooms (user_id, room_id, role) VALUES ($1, $2, $3) RETURNING *;",
+            [user_id, room_id, role]
         );
 
-        res.status(201).json({ success: true, message: "Room Created Successfully", data: newRoom.rows[0] });
+        res.status(201).json({ success: true, message: "Member joined Successfully", data: newMember.rows[0] });
 
     } catch (err) {
         res.status(500).json({
@@ -25,7 +26,6 @@ roomRouter.post('/create', authMiddleware, async (req, res) => {
         });
     }
 });
-
 
 roomRouter.get('/public', authMiddleware, async (req, res) => {
     try {
