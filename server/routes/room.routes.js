@@ -86,4 +86,5 @@ roomRouter.patch('/update/:room_id', authMiddleware, adminAccessMiddleware, asyn
 
 })
 
+
 export default roomRouter;

@@ -25,8 +25,7 @@ CREATE TABLE users(
     phone_number VARCHAR(20),
     profile_pic TEXT,
     about_info TEXT,
-    account_type VARCHAR(15) CHECK (account_type IN ('Gamer', 'Organizer', 'Admin')),
-    is_verified BOOLEAN DEFAULT FALSE,
+    account_type VARCHAR(15) CHECK (account_type IN ('Gamer', 'Organizer', 'Admin')) DEFAULT 'Gamer',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

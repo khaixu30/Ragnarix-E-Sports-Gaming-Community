@@ -8,7 +8,7 @@ const adminAccessMiddleware = async(req, res, next)=> {
             "SELECT * FROM rooms WHERE admin_id = $1 AND id = $2",
             [user_id, room_id]
         )
-        if(rooms.rows.length===0){
+        if(room.rows.length===0){
             return res.status(400).json({success: false, message: "Unauthorized."})
         }
 

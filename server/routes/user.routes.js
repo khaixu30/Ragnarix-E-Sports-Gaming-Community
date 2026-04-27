@@ -2,14 +2,14 @@ import { Router } from 'express';
 import pool from '../db/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import authMiddleware from '../middleware/auth.middleware.js';
+import {authMiddleware, checkOwnership} from '../middleware/auth.middleware.js';
 
 const userRouter = Router();
 
 userRouter.post('/signup', async (req, res) => {
     try {
 
-        const { username, email, password, full_name, phone_number } = req.body;
+        const { username, email, password, full_name, phone_number, profile_pic, about_info, account_type } = req.body;
         const password_hash = await bcrypt.hash(password, 10);
 
         const _check_1 = await pool.query(
@@ -37,8 +37,8 @@ userRouter.post('/signup', async (req, res) => {
         }
 
         const newUser = await pool.query(
-            "INSERT INTO users (username, email, password_hash, full_name, phone_number) VALUES ($1, $2, $3, $4, $5) RETURNING *;",
-            [username, email, password_hash, full_name, phone_number]
+            "INSERT INTO users (username, email, password_hash, full_name, phone_number, profile_pic, about_info, account_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;",
+            [username, email, password_hash, full_name, phone_number, profile_pic, about_info, account_type]
         );
 
         const payload = {
@@ -169,6 +169,118 @@ userRouter.get('/:user_id', authMiddleware, async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Internal Server Error!"
+        });
+    }
+});
+
+userRouter.patch('/update/:id', authMiddleware, checkOwnership, async (req, res) => {
+    try{
+        const { id } = req.params;
+        const { username, password, full_name, phone_number, profile_pic, about_info, account_type } = req.body;
+
+        // Check if username is being updated
+        if(username) {
+            const _check_username = await pool.query(
+                "SELECT * FROM users WHERE username = $1 AND id != $2;",
+                [username, id]
+            );
+            if (_check_username.rows.length !== 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Username not available."
+                });
+            }
+        }
+
+        // Build dynamic update query with provided fields
+        let updateFields = [];
+        let updateParams = [];
+        let paramIndex = 1;
+
+        if(username) {
+            updateFields.push(`username = $${paramIndex}`);
+            updateParams.push(username);
+            paramIndex++;
+        }
+
+        if(password) {
+            const password_hash = await bcrypt.hash(password, 10);
+            updateFields.push(`password_hash = $${paramIndex}`);
+            updateParams.push(password_hash);
+            paramIndex++;
+        }
+
+        if(full_name) {
+            updateFields.push(`full_name = $${paramIndex}`);
+            updateParams.push(full_name);
+            paramIndex++;
+        }
+
+        if(phone_number) {
+            updateFields.push(`phone_number = $${paramIndex}`);
+            updateParams.push(phone_number);
+            paramIndex++;
+        }
+
+        if(profile_pic) {
+            updateFields.push(`profile_pic = $${paramIndex}`);
+            updateParams.push(profile_pic);
+            paramIndex++;
+        }
+
+        if(about_info) {
+            updateFields.push(`about_info = $${paramIndex}`);
+            updateParams.push(about_info);
+            paramIndex++;
+        }
+
+        if(account_type) {
+            updateFields.push(`account_type = $${paramIndex}`);
+            updateParams.push(account_type);
+            paramIndex++;
+        }
+
+        // If no fields to update, return error
+        if(updateFields.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No fields to update."
+            });
+        }
+
+        // Add user ID to params
+        updateParams.push(id);
+
+        const updateQuery = `UPDATE users SET ${updateFields.join(', ')} WHERE id = $${paramIndex} RETURNING *;`;
+
+        const updatedUser = await pool.query(updateQuery, updateParams);
+
+        if(updatedUser.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User Updated Successfully',
+            data: {
+                id: updatedUser.rows[0].id,
+                username: updatedUser.rows[0].username,
+                profile_pic: updatedUser.rows[0].profile_pic,
+                account_type: updatedUser.rows[0].account_type,
+                about_info: updatedUser.rows[0].about_info,
+                full_name: updatedUser.rows[0].full_name,
+                phone_number: updatedUser.rows[0].phone_number,
+                is_verified: updatedUser.rows[0].is_verified
+            }
+        });
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
         });
     }
 });
