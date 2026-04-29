@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import pool from '../db/db.js';
-import authMiddleware from '../middleware/auth.middleware.js';
+import { authMiddleware } from '../middleware/auth.middleware.js'
 
 const friendRouter = Router();
 

@@ -52,3 +52,4 @@ const checkOwnership = async (req, res, next) => {
 }
 
 export {authMiddleware, checkOwnership};
+export default authMiddleware;
