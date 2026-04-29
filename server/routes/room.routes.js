@@ -27,7 +27,7 @@ roomRouter.post('/create', authMiddleware, async (req, res) => {
 });
 
 
-roomRouter.get('/public', authMiddleware, async (req, res) => {
+roomRouter.get('/:room', authMiddleware, async (req, res) => {
     try {
         const rooms = await pool.query(
             "SELECT * FROM rooms WHERE visibility = Public"
