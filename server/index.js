@@ -4,6 +4,9 @@ import userRoutes from './routes/user.routes.js';   // Authentication Routes
 import friendRouter from './routes/friend.routes.js';
 import roomRouter from './routes/room.routes.js';
 import councilRoutes from './routes/council.routes.js';
+import memberRouter from './routes/member.routes.js';
+import teamRoutes from './routes/team.routes.js';
+import eventRoutes from './routes/event.routes.js';
 
 dotenv.config();
 
@@ -16,6 +19,11 @@ app.use(express.json());
 app.use('/api/auth', userRoutes);
 app.use('/api/friend', friendRouter);
 app.use('/api/room', roomRouter);
+app.use('/api/member', memberRouter);
+app.use('/api/team', teamRoutes);
+app.use('/api/event', eventRoutes);
+app.use('/api/game', gameRoutes);
+app.use('/api/event/register', registrationRoutes);
 app.use('/api/council', councilRoutes);
 
 // Default main route;

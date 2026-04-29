@@ -1,6 +1,6 @@
 import pool from '../db/db.js';
 import { Router } from 'express';
-import authMiddleware from '../middleware/auth.middleware.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 import adminAccessMiddleware from '../middleware/room.middleware.js';
 import bcrypt from 'bcrypt'
 
@@ -27,10 +27,10 @@ roomRouter.post('/create', authMiddleware, async (req, res) => {
 });
 
 
-roomRouter.get('/:room', authMiddleware, async (req, res) => {
+roomRouter.get('/rooms', authMiddleware, async (req, res) => {
     try {
         const rooms = await pool.query(
-            "SELECT * FROM rooms WHERE visibility = Public"
+            "SELECT * FROM rooms WHERE visibility = 'Public'"
         )
         if (rooms.rows.length === 0) {
             return res.status(404).json({ success: false, message: "No room found" })

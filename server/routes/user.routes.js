@@ -268,6 +268,7 @@ userRouter.patch('/update/:id', authMiddleware, checkOwnership, async (req, res)
             data: {
                 id: updatedUser.rows[0].id,
                 username: updatedUser.rows[0].username,
+                email: updatedUser.rows[0].email,
                 profile_pic: updatedUser.rows[0].profile_pic,
                 account_type: updatedUser.rows[0].account_type,
                 about_info: updatedUser.rows[0].about_info,

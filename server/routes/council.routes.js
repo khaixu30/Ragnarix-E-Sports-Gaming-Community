@@ -1,7 +1,7 @@
 import pool from '../db/db.js';
 import { Router } from 'express';
 import checkOwnership from '../middleware/council.middleware.js'
-import authMiddleware from '../middleware/auth.middleware.js';
+import {authMiddleware} from '../middleware/auth.middleware.js';
 
 const councilRoutes = Router()
 
