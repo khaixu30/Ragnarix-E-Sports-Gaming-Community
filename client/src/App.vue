@@ -1,13 +1,7 @@
 <script setup>
-import Hero from './components/Hero.vue';
-import Navbar from './components/Navbar.vue';
-import Featured from './components/Featured.vue';
-import ESportsContestBrief from './components/ESportsContestBrief.vue';
+
 </script>
 
 <template>
-  <Navbar />
-  <Hero />
-  <Featured />
-  <ESportsContestBrief />
+
 </template>
