@@ -67,4 +67,4 @@ memberRouter.delete('/delete/:room_id/member/:user_id', authMiddleware, adminAcc
 
 
 
-export default roomRouter;
+export default memberRouter;

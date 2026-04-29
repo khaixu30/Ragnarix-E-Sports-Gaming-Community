@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import pool from '../db/db.js';
 
-const authMiddleware = (req, res, next) => {
+export const authMiddleware = (req, res, next) => {
     try{
         const authHeader = req.headers.authorization;
         if(!authHeader || !authHeader.startsWith("Bearer ")){
@@ -15,18 +16,18 @@ const authMiddleware = (req, res, next) => {
 
         next();
     }catch(err){
+        console.log(err);
         return res.status(401).json({success: false, message: "Invalid or expried token."});
     }
 }
 
-const checkOwnership = async (req, res, next) => {
+export const checkOwnership = async (req, res, next) => {
     try{
         const user_id = req.user._id;
-        const { username } = req.body;
 
         const foundUser = await pool.query(
-            "SELECT id FROM users WHERE username = $1;",
-            [username]
+            "SELECT id FROM users WHERE id = $1;",
+            [user_id]
         );
 
         if(foundUser.rows.length === 0){
@@ -44,12 +45,10 @@ const checkOwnership = async (req, res, next) => {
 
         next();
     }catch(err){
-        res.status(500).json({
+        console.log(err);
+        return res.status(500).json({
             success: false,
             message: "Internal server error."
         })
     }
 }
-
-export {authMiddleware, checkOwnership};
-export default authMiddleware;
