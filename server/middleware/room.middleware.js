@@ -1,6 +1,6 @@
 import pool from "../db/db.js";
 
-const adminAccessMiddleware = async(req, res, next)=> {
+export const adminAccessMiddleware = async(req, res, next)=> {
     try {
         const user_id = req.user._id;
         const {room_id} = req.params;

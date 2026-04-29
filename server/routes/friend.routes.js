@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import pool from '../db/db.js';
-import { authMiddleware } from '../middleware/auth.middleware.js'
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const friendRouter = Router();
 
@@ -78,7 +78,7 @@ friendRouter.get('/all', authMiddleware, async (req, res) => {
         );
 
         if(fetchFriends.rows.length === 0){
-            return res.status(404).json({success: false, message: "You don't have friends. Try adding some.", data: {}});
+            return res.status(404).json({success: false, message: "You don't have friends. Try adding some.", data: []});
         }
 
         res.status(200).json({success: true, message: "Friends fetched successfully.", data: fetchFriends.rows});
@@ -98,7 +98,7 @@ friendRouter.get('/all/accepted', authMiddleware, async (req, res) => {
         );
 
         if(fetchFriends.rows.length === 0){
-            return res.status(404).json({success: false, message: "You don't have any accepted requests.", data: {}});
+            return res.status(404).json({success: false, message: "You don't have any accepted requests.", data: []});
         }
 
         res.status(200).json({success: true, message: "Friends fetched successfully.", data: fetchFriends.rows});
@@ -118,7 +118,7 @@ friendRouter.get('/all/pending', authMiddleware, async (req, res) => {
         );
 
         if(fetchFriends.rows.length === 0){
-            return res.status(404).json({success: false, message: "You don't have any pending requests.", data: {}});
+            return res.status(404).json({success: false, message: "You don't have any pending requests.", data: []});
         }
 
         res.status(200).json({success: true, message: "Friends fetched successfully.", data: fetchFriends.rows});
@@ -138,7 +138,7 @@ friendRouter.get('/all/rejected', authMiddleware, async (req, res) => {
         );
 
         if(fetchFriends.rows.length === 0){
-            return res.status(404).json({success: false, message: "You don't have any rejected requests.", data: {}});
+            return res.status(404).json({success: false, message: "You don't have any rejected requests.", data: []});
         }
 
         res.status(200).json({success: true, message: "Friends fetched successfully.", data: fetchFriends.rows});

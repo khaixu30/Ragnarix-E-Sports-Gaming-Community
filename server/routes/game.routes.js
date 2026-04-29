@@ -1,4 +1,6 @@
 import express from "express";
+import pool from '../db/db.js';
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const gameRoutes = express.Router();
 
@@ -9,8 +11,8 @@ gameRoutes.get("/", async (req, res) => {
         let query = "SELECT id, name, description, logo_url, rating, added_on FROM games";
         const params = [];
  
-        if (search) {
-            params.push(`%${search}%`);
+        if (search && search.trim()) {
+            params.push(`%${search.trim()}%`);
             query += " WHERE name ILIKE $1 OR description ILIKE $1";
         }
  
@@ -20,31 +22,44 @@ gameRoutes.get("/", async (req, res) => {
  
         return res.status(200).json({ success: true, count: rows.length, data: rows });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ success: false, message: "Internal server error." });
     }
 });
 
 // POST /api/games — Add a game to the library
-gameRoutes.post("/", async (req, res) => {
+gameRoutes.post("/add", authMiddleware, async (req, res) => {
     try {
         const { name, description, logo_url, system_requirements } = req.body;
- 
-        if (!name) {
-            return res.status(400).json({ success: false, message: "name is required." });
+
+        // Validation
+        const errors = [];
+
+        if (!name || typeof name !== "string" || !name.trim()) {
+            errors.push("name is required and must be a non-empty string.");
         }
- 
-        if (!system_requirements || typeof system_requirements !== "object") {
-            return res.status(400).json({
-                success: false,
-                message: "system_requirements must be a valid JSON object."
-            });
+
+        if (description !== undefined && description !== null && typeof description !== "string") {
+            errors.push("description must be a string.");
+        }
+
+        if (logo_url !== undefined && logo_url !== null && typeof logo_url !== "string") {
+            errors.push("logo_url must be a string.");
+        }
+
+        if (!system_requirements || typeof system_requirements !== "object" || Array.isArray(system_requirements)) {
+            errors.push("system_requirements must be a valid JSON object (not an array).");
+        }
+
+        if (errors.length > 0) {
+            return res.status(400).json({ success: false, message: "Validation failed", errors });
         }
  
         const { rows } = await pool.query(
             `INSERT INTO games (name, description, logo_url, system_requirements)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
-            [name, description || null, logo_url || null, JSON.stringify(system_requirements)]
+            [name.trim(), description?.trim() || null, logo_url?.trim() || null, JSON.stringify(system_requirements)]
         );
  
         return res.status(201).json({
@@ -53,6 +68,7 @@ gameRoutes.post("/", async (req, res) => {
             data: rows[0]
         });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ success: false, message: "Internal server error." });
     }
 });

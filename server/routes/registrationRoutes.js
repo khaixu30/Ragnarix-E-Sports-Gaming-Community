@@ -1,7 +1,7 @@
 // routes/registrationRoutes.js
 import express from 'express';
-import pool from '../db.js';
-import authMiddleware from '../middlewares/authMiddleware.js';
+import pool from '../db/db.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const registrationRoutes = express.Router();
 

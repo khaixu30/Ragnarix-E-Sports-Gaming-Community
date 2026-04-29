@@ -1,7 +1,7 @@
 import pool from '../db/db.js';
 import { Router } from 'express';
-import checkOwnership from '../middleware/council.middleware.js'
-import {authMiddleware} from '../middleware/auth.middleware.js';
+import { checkOwnership } from '../middleware/council.middleware.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const councilRoutes = Router()
 
@@ -72,7 +72,7 @@ councilRoutes.get('/info/:council_id', async (req, res) => {
             data: council.rows[0]
         });
     } catch (err) {
-        res.stauts(500).json({
+        res.status(500).json({
             success: false,
             message: "Internal server error."
         });
@@ -83,7 +83,7 @@ councilRoutes.patch('/patch/:council_id', authMiddleware, checkOwnership, async 
     try{
         const { name, description, logo_url } = req.body
         const {council_id} = req.params
-        let updateFeilds = []
+        let updateFields = []
         let updateParams = []
         let paramIndex = 1
 
@@ -121,7 +121,7 @@ councilRoutes.patch('/patch/:council_id', authMiddleware, checkOwnership, async 
         res.status(200).json({
             success: true,
             message: 'Council Updated Successfully',
-            data: updatedCouncil
+            data: updatedCouncil.rows[0]
         });
 
     }catch(err){
@@ -132,7 +132,7 @@ councilRoutes.patch('/patch/:council_id', authMiddleware, checkOwnership, async 
     }
 })
 
-councilRoutes.delete("/:council_id", checkOwnership, async (req, res) => {
+councilRoutes.delete("/:council_id", authMiddleware, checkOwnership, async (req, res) => {
     try {
         const { council_id } = req.params;
  

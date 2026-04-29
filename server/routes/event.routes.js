@@ -1,8 +1,8 @@
 import { Router } from "express";
 import pool from "../db/db.js";
-import { validateCreateEvent, validateUpdateEvent, validateStatusUpdate } from "../middlewares/validate.middleware.js";
-import { authenticate } from "../middlewares/auth.middleware.js";
-import { requireEventExists, requireCouncilOwner } from "../middlewares/permission.middleware.js";
+import { validateCreateEvent, validateUpdateEvent, validateStatusUpdate } from "../middleware/validate.middleware.js";
+import { authMiddleware as authenticate } from "../middleware/auth.middleware.js";
+import { requireEventExists, requireCouncilOwner } from "../middleware/permission.middleware.js";
 
 const eventRoutes = Router();
 
@@ -60,6 +60,10 @@ eventRoutes.post("/", authenticate, validateCreateEvent, async (req, res) => {
 eventRoutes.get("/", async (req, res) => {
   const { status, event_type, game_id, council_id, page = 1, limit = 10 } = req.query;
 
+  // Validate pagination parameters
+  const pageNum = Math.max(1, parseInt(page) || 1);
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10)); // Max 100 per page
+
   const conditions = [];
   const params = [];
   let idx = 1;
@@ -70,13 +74,13 @@ eventRoutes.get("/", async (req, res) => {
   if (council_id) { conditions.push(`council_id = $${idx++}`); params.push(council_id); }
 
   const where  = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
-  const offset = (parseInt(page) - 1) * parseInt(limit);
+  const offset = (pageNum - 1) * limitNum;
 
   try {
     const [eventsResult, countResult] = await Promise.all([
       pool.query(
         `SELECT * FROM events ${where} ORDER BY created_at DESC LIMIT $${idx} OFFSET $${idx + 1}`,
-        [...params, parseInt(limit), offset]
+        [...params, limitNum, offset]
       ),
       pool.query(`SELECT COUNT(*) FROM events ${where}`, params),
     ]);
@@ -84,8 +88,8 @@ eventRoutes.get("/", async (req, res) => {
     res.json({
       success: true,
       total: parseInt(countResult.rows[0].count),
-      page: parseInt(page),
-      limit: parseInt(limit),
+      page: pageNum,
+      limit: limitNum,
       events: eventsResult.rows,
     });
   } catch (err) {

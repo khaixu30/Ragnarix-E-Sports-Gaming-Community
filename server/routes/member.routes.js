@@ -1,7 +1,7 @@
 import pool from '../db/db.js';
 import { Router } from 'express';
-import authMiddleware from '../middleware/auth.middleware.js';
-import adminAccessMiddleware from '../middleware/room.middleware.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
+import { adminAccessMiddleware } from '../middleware/room.middleware.js';
 import bcrypt from 'bcrypt'
 
 const memberRouter = Router();
@@ -13,7 +13,7 @@ memberRouter.post('/create/:room_id', authMiddleware, async (req, res) => {
         const role = 'Member'
 
         const newMember = await pool.query(
-            "INSERT INTO rooms (user_id, room_id, role) VALUES ($1, $2, $3) RETURNING *;",
+            "INSERT INTO members_rooms (user_id, room_id, role) VALUES ($1, $2, $3) RETURNING *;",
             [user_id, room_id, role]
         );
 

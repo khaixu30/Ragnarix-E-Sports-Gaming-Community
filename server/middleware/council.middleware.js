@@ -1,6 +1,6 @@
 import pool from "../db/db.js";
 
-const checkOwnership = async(req, res, next)=> {
+export const checkOwnership = async(req, res, next)=> {
     try {
         const user_id = req.user._id;
         const {council_id} = req.params;

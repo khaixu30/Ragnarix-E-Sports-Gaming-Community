@@ -1,8 +1,8 @@
 // routes/teamRoutes.js
 import express from 'express';
-import pool from '../db.js';
-import authMiddleware from '../middlewares/authMiddleware.js';
-import { isTeamLeader } from '../middlewares/teamMiddleware.js';
+import pool from '../db/db.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
+import { isTeamLeader } from '../middleware/team.middleware.js';
 
 const teamRoutes = express.Router();
 

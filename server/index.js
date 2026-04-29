@@ -7,6 +7,8 @@ import councilRoutes from './routes/council.routes.js';
 import memberRouter from './routes/member.routes.js';
 import teamRoutes from './routes/team.routes.js';
 import eventRoutes from './routes/event.routes.js';
+import gameRoutes from './routes/game.routes.js';
+import registrationRoutes from './routes/registrationRoutes.js';
 
 dotenv.config();
 
