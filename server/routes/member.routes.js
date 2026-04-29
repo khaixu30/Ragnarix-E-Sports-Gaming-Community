@@ -27,35 +27,17 @@ memberRouter.post('/create/:room_id', authMiddleware, async (req, res) => {
     }
 });
 
-roomRouter.get('/public', authMiddleware, async (req, res) => {
+memberRouter.get('/:room_id/member', authMiddleware, async (req, res) => {
     try {
-        const rooms = await pool.query(
-            "SELECT * FROM rooms WHERE visibility = Public"
-        )
-        if (rooms.rows.length === 0) {
-            return res.status(404).json({ success: false, message: "No room found" })
-        }
-        res.status(200).json({ success: true, message: "Rooms found", data: rooms.rows })
-
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: "Internal server error."
-        });
-    }
-});
-
-roomRouter.get('/id/:room_id', authMiddleware, async (req, res) => {
-    try {
-        const { room_id } = req.params
-        const rooms = await pool.query(
-            "SELECT * FROM rooms WHERE id = $1",
+        const {room_id} = req.params
+        const members_rooms = await pool.query(
+            "SELECT * FROM members_rooms WHERE room_id = $1",
             [room_id]
         )
-        if (rooms.rows.length === 0) {
-            return res.status(404).json({ success: false, message: "No room found" })
+        if (members_rooms.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "No member found" })
         }
-        res.status(200).json({ success: true, message: "Rooms found", data: rooms.rows[0] })
+        res.status(200).json({ success: true, message: "members found", data: members_rooms.rows })
 
     } catch (err) {
         res.status(500).json({
@@ -65,35 +47,14 @@ roomRouter.get('/id/:room_id', authMiddleware, async (req, res) => {
     }
 });
 
-roomRouter.patch('/update/:room_id', authMiddleware, adminAccessMiddleware, async (req, res) => {
+memberRouter.delete('/delete/:room_id/member/:user_id', authMiddleware, adminAccessMiddleware, async (req, res) => {
     try {
-        const { admin_id, room_name, room_logo_url, description, visibility, password, rules } = req.body;
-        const password_hash = await bcrypt.hash(password, 10);
-        const { room_id } = req.params;
-        const updatedRoom = await pool.query(
-            'UPDATE rooms SET  admin_id = $1, room_name = $2, room_logo_url = $3, description = $4, visibility = $6, password_hash = $7, rules =$8 WHERE id = $9 RETURNING *;',
-            [admin_id, room_name, room_logo_url, description, visibility, password_hash, rules, room_id]
-        )
-        res.status(200).json({ success: true, message: "Room updated Successfully", data: updatedRoom.rows[0] });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Internal server error."
-        });
-    }
-
-
-
-})
-
-roomRouter.delete('/delete/:room_id', authMiddleware, adminAccessMiddleware, async (req, res) => {
-    try {
-        const { room_id } = req.params;
+        const { room_id, user_id } = req.params;
         const deleteRoom = await pool.query(
-            'DELETE FROM rooms WHERE id= $1', 
-            [room_id]
+            'DELETE FROM rooms WHERE room_id = $1  AND user_id = $2', 
+            [room_id, user_id]
         )
-        res.status(200).json({ success: true, message: "Room deleted Successfully" });
+        res.status(200).json({ success: true, message: "member deleted Successfully" });
 
     } catch (error) {
         res.status(500).json({
