@@ -1,5 +1,5 @@
 import pool from '../db/db.js';
-import { Router } from 'express';
+import { councilRoutes } from 'express';
 import checkOwnership from '../middleware/council.middleware.js'
 
 const councilRoutes = Router();
@@ -130,5 +130,113 @@ councilRoutes.patch('/patch/:council_id', authMiddleware, checkOwnership, async 
         })
     }
 })
+
+councilRoutes.delete("/:council_id", checkOwnership, async (req, res) => {
+    try {
+        const { council_id } = req.params;
+ 
+        await pool.query("DELETE FROM councils WHERE id = $1", [council_id]);
+ 
+        return res.status(200).json({
+            success: true,
+            message: "Council deleted successfully."
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+ 
+// POST /api/councils/:council_id/members — Add organizer to council (owner only)
+councilRoutes.post("/:council_id/members", checkOwnership, async (req, res) => {
+    try {
+        const { council_id } = req.params;
+        const { user_id, role } = req.body;
+ 
+        const validRoles = ["Tournament Director", "Moderator", "Manager"];
+ 
+        if (!user_id || !role) {
+            return res.status(400).json({ success: false, message: "user_id and role are required." });
+        }
+ 
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid role. Must be one of: ${validRoles.join(", ")}.`
+            });
+        }
+ 
+        const userCheck = await pool.query("SELECT id FROM users WHERE id = $1", [user_id]);
+        if (userCheck.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+ 
+        const { rows } = await pool.query(
+            `INSERT INTO council_members (user_id, council_id, role)
+             VALUES ($1, $2, $3)
+             ON CONFLICT (user_id, council_id)
+             DO UPDATE SET role = EXCLUDED.role
+             RETURNING *`,
+            [user_id, council_id, role]
+        );
+ 
+        return res.status(201).json({
+            success: true,
+            message: "Member added to council.",
+            data: rows[0]
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+ 
+// GET /api/councils/:council_id/members — List council organizers (public)
+councilRoutes.get("/:council_id/members", async (req, res) => {
+    try {
+        const { council_id } = req.params;
+ 
+        const councilCheck = await pool.query("SELECT id FROM councils WHERE id = $1", [council_id]);
+        if (councilCheck.rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Council not found." });
+        }
+ 
+        const { rows } = await pool.query(
+            `SELECT
+                u.id,
+                u.username,
+                u.email,
+                cm.role,
+                cm.joined_at
+             FROM council_members cm
+             JOIN users u ON u.id = cm.user_id
+             WHERE cm.council_id = $1
+             ORDER BY cm.joined_at ASC`,
+            [council_id]
+        );
+ 
+        return res.status(200).json({ success: true, data: rows });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+ 
+// DELETE /api/councils/:council_id/members/:user_id — Remove organizer (owner only)
+councilRoutes.delete("/:council_id/members/:user_id", checkOwnership, async (req, res) => {
+    try {
+        const { council_id, user_id } = req.params;
+ 
+        const { rowCount } = await pool.query(
+            "DELETE FROM council_members WHERE council_id = $1 AND user_id = $2",
+            [council_id, user_id]
+        );
+ 
+        if (rowCount === 0) {
+            return res.status(404).json({ success: false, message: "Member not found in this council." });
+        }
+ 
+        return res.status(200).json({ success: true, message: "Member removed from council." });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
 
 export default councilRoutes;
