@@ -73,8 +73,6 @@ CREATE TABLE councils(
     name TEXT NOT NULL,
     description TEXT,
     logo_url TEXT,
-    rank VARCHAR(50) NOT NULL DEFAULT 'Silver' CHECK (rank IN ('Silver', 'Gold', 'Platinum', 'Diamond', 'Legend')),
-    is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
