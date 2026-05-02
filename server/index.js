@@ -1,4 +1,5 @@
 import express, { urlencoded } from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.routes.js';   // Authentication Routes
 import friendRouter from './routes/friend.routes.js';
@@ -14,6 +15,7 @@ dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 // Using routes;
