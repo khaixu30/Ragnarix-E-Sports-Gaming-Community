@@ -61,11 +61,11 @@
                 <ul class="contact-list">
                     <li>
                         <i class="fa-solid fa-envelope"></i>
-                        <span>support@ggarena.gg</span>
+                        <span>support@ragnarix.gg</span>
                     </li>
                     <li>
                         <i class="fa-solid fa-phone"></i>
-                        <span>+1 (800) GG-ARENA</span>
+                        <span>+1 (800) Ragnarix</span>
                     </li>
                     <li>
                         <i class="fa-solid fa-location-dot"></i>
@@ -90,7 +90,7 @@
         <!-- Bottom bar -->
         <div class="footer-bottom">
             <p class="copyright">
-                <i class="fa-regular fa-copyright"></i> 2025 GG Arena. All rights reserved.
+                <i class="fa-regular fa-copyright"></i> 2026 Ragnarix. All rights reserved.
             </p>
             <div class="bottom-badges">
                 <span><i class="fa-solid fa-shield-halved"></i> Secure Payments</span>

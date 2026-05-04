@@ -128,7 +128,7 @@ userRouter.post('/login', async (req, res) => {
     }
 });
 
-userRouter.get('/:user_id', authMiddleware, async (req, res) => {
+userRouter.get('/get/:user_id', authMiddleware, async (req, res) => {
     try {
         const { user_id } = req.params;
         const foundUser = await pool.query(
@@ -166,6 +166,47 @@ userRouter.get('/:user_id', authMiddleware, async (req, res) => {
         });
     }
 });
+
+userRouter.get('/me', authMiddleware, async (req, res) => {
+    try {
+        const user_id = req.user._id; // 👈 set by authMiddleware, no need for req.params
+
+        const foundUser = await pool.query(
+            "SELECT * FROM users WHERE id = $1;",
+            [user_id]
+        );
+
+        if (foundUser.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found!"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "User found",
+            data: {
+                id: foundUser.rows[0].id,
+                username: foundUser.rows[0].username,
+                email: foundUser.rows[0].email,
+                full_name: foundUser.rows[0].full_name,
+                phone_number: foundUser.rows[0].phone_number,
+                profile_pic: foundUser.rows[0].profile_pic,
+                about_info: foundUser.rows[0].about_info,
+                account_type: foundUser.rows[0].account_type,
+                is_verified: foundUser.rows[0].is_verified
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error!"
+        });
+    }
+});
+
 
 userRouter.patch('/update/:id', authMiddleware, checkOwnership, async (req, res) => {
     try{
