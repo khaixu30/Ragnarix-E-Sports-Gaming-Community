@@ -14,7 +14,7 @@ export const isTeamLeader = async (req, res, next) => {
       return res.status(404).json({ message: "Team not found" });
     }
 
-    if (result.rows[0].leader_id !== req.user.id) {
+    if (result.rows[0].leader_id !== req.user._id) {
       return res.status(403).json({ message: "Access denied" });
     }
 

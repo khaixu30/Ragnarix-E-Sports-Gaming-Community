@@ -9,7 +9,7 @@ import memberRouter from './routes/member.routes.js';
 import teamRoutes from './routes/team.routes.js';
 import eventRoutes from './routes/event.routes.js';
 import gameRoutes from './routes/game.routes.js';
-import registrationRoutes from './routes/registrationRoutes.js';
+import registrationRoutes from './routes/registration.routes.js';
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.use('/api/member', memberRouter);
 app.use('/api/team', teamRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/game', gameRoutes);
-app.use('/api/event/register', registrationRoutes);
+app.use('/api/register', registrationRoutes);
 app.use('/api/council', councilRoutes);
 
 // Default main route;

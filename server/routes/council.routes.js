@@ -143,7 +143,7 @@ councilRoutes.delete("/:council_id", authMiddleware, checkOwnership, async (req,
             message: "Council deleted successfully."
         });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Internal server error." });
+        res.status(500).json({ success: false, message: "Internal server error. Issued by route" });
     }
 });
  

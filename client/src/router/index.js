@@ -16,6 +16,18 @@ import DashboardRegistrationsView from "../views/dashboard/DashboardRegistration
 import DashboardSettingsView from "../views/dashboard/DashboardSettingsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 
+// ── Council ─────────────────────────────────────────────
+import CouncilsView from "../views/council/CouncilsView.vue";
+import CouncilDetailView from "../views/council/CouncilDetailView.vue";
+import CouncilCreateView from "../views/council/CouncilCreateView.vue";
+import CouncilDashboardView from "../views/council/CouncilDashboardView.vue";
+
+// ── Friends ─────────────────────────────────────────────
+import FriendsView from "../views/friends/FriendsView.vue";
+
+// ── Chat ────────────────────────────────────────────────
+import ChatView from "../views/chat/ChatView.vue";
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     scrollBehavior(to, from, savedPosition) {
@@ -74,6 +86,59 @@ const router = createRouter({
             props: true
         },
 
+        // ── Council ─────────────────────────────────────────
+        {
+            path: '/council',
+            name: 'councils',
+            component: CouncilsView
+        },
+        {
+            path: '/council/create',
+            name: 'council-create',
+            component: CouncilCreateView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/council/:id',
+            name: 'council-detail',
+            component: CouncilDetailView,
+            props: true
+        },
+        {
+            path: '/council/:id/dashboard',
+            name: 'council-dashboard',
+            component: CouncilDashboardView,
+            props: true,
+            meta: { requiresAuth: true }
+        },
+
+        // ── Friends ─────────────────────────────────────────
+        {
+            path: '/dashboard/friends',
+            name: 'friends',
+            component: FriendsView,
+            meta: { requiresAuth: true }
+        },
+
+        // ── Chat ────────────────────────────────────────────
+        // ChatView is a full layout with sidebar (room list) + outlet.
+        // The :roomId param is optional — when absent the sidebar is shown
+        // with an empty-state panel; when present the room is opened.
+        {
+            path: '/dahsboard/chat',
+            name: 'chat',
+            component: ChatView,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: ':roomId',
+                    name: 'chat-room',
+                    component: ChatView,   // same component reads the param internally
+                    props: true
+                }
+            ]
+        },
+
         // ── Auth ────────────────────────────────────────────
         {
             path: '/login',
@@ -124,7 +189,7 @@ const router = createRouter({
 
 // ── Navigation Guards ────────────────────────────────────
 router.beforeEach((to, from, next) => {
-    const isLoggedIn = !!localStorage.getItem('token'); // replace with your actual auth check
+    const isLoggedIn = !!localStorage.getItem('token');
 
     if (to.meta.requiresAuth && !isLoggedIn) {
         next({ name: 'login', query: { redirect: to.fullPath } });

@@ -6,6 +6,16 @@ import UpcomingEvents from '../components/HomePageComponents/UpcomingEvents.vue'
 import FeaturedGames from '../components/HomePageComponents/FeaturedGames.vue';
 import Footer from '../components/Footer.vue';
 import LoginDiv from '../components/HomePageComponents/LoginDiv.vue';
+import { ref } from 'vue';
+
+const isLoggedIn = ref(false);
+
+const checkLoggedIn = () => {
+    const token = localStorage.getItem('token')
+    if(token){
+        isLoggedIn.value = true;
+    }
+}
 </script>
 
 <template>
@@ -14,6 +24,6 @@ import LoginDiv from '../components/HomePageComponents/LoginDiv.vue';
     <HeroMarquee />
     <UpcomingEvents />
     <FeaturedGames />
-    <LoginDiv />
+    <LoginDiv v-if="isLoggedIn" />
     <Footer />
 </template>

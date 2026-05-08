@@ -17,7 +17,7 @@ export const checkOwnership = async(req, res, next)=> {
     } catch (err) {
         res.status(500).json({
             success: false,
-            message: "Internal server error."
+            message: "Internal server error. Issued by middleware!"
         });
     }
 }
