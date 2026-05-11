@@ -11,7 +11,7 @@ const fetch_councils = async () => {
     loading.value = true;
     error.value = '';
     try {
-        const response = await fetch('http://localhost:3000/api/council/all');
+        const response = await fetch(`http://localhost:3000/api/council/all`);
         const json = await response.json();
         if (!json.success) throw new Error(json.message);
         councils.value = json.data;

@@ -49,9 +49,9 @@ const removeMember = (index) => {
 const fetch_event = async () => {
     eventLoading.value = true;
     try {
-        const response = await fetch(`http://localhost:3000/api/event/${event_id}`);
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/event/${event_id}`);
         console.log('Event response status:', response.status);
-        console.log('Event URL hit:', `http://localhost:3000/api/event/${event_id}`);
+        console.log('Event URL hit:', `${import.meta.env.VITE_HOST}/api/event/${event_id}`);
         console.log('event_id from route:', event_id); // 👈 is this undefined?
         const json = await response.json();
         console.log('RAW event json:', json);
@@ -69,7 +69,7 @@ const fetch_user = async () => {
         const token = localStorage.getItem('token');
         if (!token) { router.push('/login'); return; }
 
-        const response = await fetch('http://localhost:3000/api/auth/me', {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/auth/me`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ const handleRegister = async () => {
 
         // ── Solo registration ────────────────────────────────
         if (!isTeamEvent.value) {
-            const response = await fetch(`http://localhost:3000/api/register/event/${event_id}`, {
+            const response = await fetch(`${import.meta.env.VITE_HOST}/api/register/event/${event_id}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -115,7 +115,7 @@ const handleRegister = async () => {
         }
 
         // Step 1: Create team — route is POST /api/team/event/:event_id
-        const teamResponse = await fetch(`http://localhost:3000/api/team/event/${event_id}`, {
+        const teamResponse = await fetch(`${import.meta.env.VITE_HOST}/api/team/event/${event_id}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -131,7 +131,7 @@ const handleRegister = async () => {
         // Step 2: Add members — route is POST /api/team/:team_id/members with { username }
         const validMembers = memberUsernames.value.filter(u => u.trim() !== '');
         for (const username of validMembers) {
-            const memberRes = await fetch(`http://localhost:3000/api/team/${team_id}/members`, {
+            const memberRes = await fetch(`${import.meta.env.VITE_HOST}/api/team/${team_id}/members`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -144,7 +144,7 @@ const handleRegister = async () => {
         }
 
         // Step 3: Register team for event — route is POST /api/register/event/:event_id
-        const regResponse = await fetch(`http://localhost:3000/api/register/event/${event_id}`, {
+        const regResponse = await fetch(`${import.meta.env.VITE_HOST}/api/register/event/${event_id}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

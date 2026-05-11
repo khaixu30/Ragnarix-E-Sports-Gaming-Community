@@ -29,7 +29,7 @@ const chipClass = (role) => {
 
 const fetch_council = async () => {
     try {
-        const response = await fetch(`http://localhost:3000/api/council/info/${council_id}`);
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/info/${council_id}`);
         const json = await response.json();
         if (!json.success) throw new Error(json.message);
         council.value = json.data;
@@ -40,7 +40,7 @@ const fetch_council = async () => {
 
 const fetch_members = async () => {
     try {
-        const response = await fetch(`http://localhost:3000/api/council/${council_id}/members`);
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/${council_id}/members`);
         const json = await response.json();
         if (json.success) members.value = json.data;
     } catch (err) {
@@ -52,7 +52,7 @@ const fetch_user = async () => {
     try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const response = await fetch('http://localhost:3000/api/auth/me', {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/auth/me`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const json = await response.json();
@@ -66,7 +66,7 @@ const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this council? This cannot be undone.')) return;
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/council/${council_id}`, {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/${council_id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });

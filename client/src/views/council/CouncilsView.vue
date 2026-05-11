@@ -34,7 +34,7 @@ const formatDate = (iso) => {
 const fetch_members = async () => {
     loading.value = true;
     try {
-        const response = await fetch(`http://localhost:3000/api/council/${council_id}/members`);
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/${council_id}/members`);
         const json = await response.json();
         if (json.success) members.value = json.data;
     } catch (err) {
@@ -56,7 +56,7 @@ const handleAdd = async () => {
     addLoading.value = true;
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/council/${council_id}/members`, {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/${council_id}/members`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -87,7 +87,7 @@ const handleRemove = async (user_id, username) => {
     error.value = '';
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/council/${council_id}/members/${user_id}`, {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/${council_id}/members/${user_id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });

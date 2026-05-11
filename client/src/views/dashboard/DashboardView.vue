@@ -12,7 +12,7 @@ const fetch_user = async () => {
     try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const response = await fetch('http://localhost:3000/api/auth/me', {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/auth/me`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const json = await response.json();
@@ -24,7 +24,7 @@ const fetch_user = async () => {
 
 const fetch_events = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/event/');
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/event/`);
         const json = await response.json();
         const events = json.events || [];
 
@@ -33,7 +33,7 @@ const fetch_events = async () => {
         for (const event of events) {
             if (event.game_id && !gameDataMap[event.game_id]) {
                 try {
-                    const gameRes = await fetch(`http://localhost:3000/api/game/${event.game_id}`);
+                    const gameRes = await fetch(`${import.meta.env.VITE_HOST}/api/game/${event.game_id}`);
                     const gameJson = await gameRes.json();
                     gameDataMap[event.game_id] = gameJson.data;
                 } catch (e) { console.error(e); }
@@ -50,7 +50,7 @@ const fetch_events = async () => {
 
 const fetch_councils = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/council/all');
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/all`);
         const json = await response.json();
         console.log(json);
         if (json.success) councils.value = json.data;

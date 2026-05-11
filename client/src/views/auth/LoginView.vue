@@ -15,7 +15,7 @@ const handlelogin = async () => {
     error.value = ''
     loading.value = true
     try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -86,7 +86,7 @@ const handlelogin = async () => {
             <div class="form-wrap">
 
                 <div class="form-header">
-                    <p class="form-label"><i class="fa-solid fa-right-to-bracket"></i> Sign In</p>
+                    <p class="form-label"><i class="fa-solid fa-right-to-bracket"></i> Log In</p>
                     <h2>Access Your <span>Account</span></h2>
                     <p class="form-sub">Enter your credentials to continue.</p>
                 </div>
@@ -136,10 +136,10 @@ const handlelogin = async () => {
 
                     <button type="submit" class="submit-btn" :disabled="loading">
                         <span v-if="!loading">
-                            <i class="fa-solid fa-bolt"></i> Sign In
+                            <i class="fa-solid fa-bolt"></i> Log In
                         </span>
                         <span v-else>
-                            <i class="fa-solid fa-spinner fa-spin"></i> Signing in...
+                            <i class="fa-solid fa-spinner fa-spin"></i> logging in...
                         </span>
                     </button>
 

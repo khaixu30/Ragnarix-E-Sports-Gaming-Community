@@ -64,6 +64,26 @@ CREATE TABLE room_members(
     PRIMARY KEY (room_id, user_id)
 );
 
+-- ─────────────────────────────────────────
+-- Messages Schema
+-- ─────────────────────────────────────────
+
+CREATE TABLE messages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    room_id UUID REFERENCES rooms(id) ON DELETE CASCADE NOT NULL,
+    sender_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    content TEXT NOT NULL,
+    message_type VARCHAR(10) CHECK (message_type IN ('text', 'image', 'system')) DEFAULT 'text',
+    reply_to UUID REFERENCES messages(id) ON DELETE SET NULL DEFAULT NULL,
+    is_edited BOOLEAN DEFAULT FALSE,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for fast room message fetching
+CREATE INDEX idx_messages_room_id ON messages(room_id);
+CREATE INDEX idx_messages_sender_id ON messages(sender_id);
+
 -- Council & Tournament (4 Tables)
 
 -- 1. Council

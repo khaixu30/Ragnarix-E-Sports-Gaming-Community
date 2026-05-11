@@ -19,7 +19,7 @@ const loadGames = async () => {
     loading.value = true;
     error.value = null;
     try {
-        const response = await fetch('http://localhost:3000/api/game/');
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/game/`);
         if (!response.ok) {
             throw new Error(`Fetch failed: ${response.status}`);
         }

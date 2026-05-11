@@ -20,7 +20,7 @@ const form = ref({
 
 const fetch_council = async () => {
     try {
-        const response = await fetch(`http://localhost:3000/api/council/info/${council_id}`);
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/info/${council_id}`);
         const json = await response.json();
         if (!json.success) throw new Error(json.message);
         form.value.name = json.data.name;
@@ -45,7 +45,7 @@ const handleUpdate = async () => {
     loading.value = true;
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/api/council/patch/${council_id}`, {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/patch/${council_id}`, {
             method: 'PATCH',
             headers: {
                 'Authorization': `Bearer ${token}`,

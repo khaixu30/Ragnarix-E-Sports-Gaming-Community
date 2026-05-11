@@ -23,7 +23,7 @@ const fetch_user_data = async () => {
             return;
         }
 
-        const response = await fetch('http://localhost:3000/api/auth/me', {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/auth/me`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,

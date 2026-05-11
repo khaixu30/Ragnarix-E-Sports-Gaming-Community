@@ -15,7 +15,7 @@ const fetch_events_data = async () => {
     error.value = null;
 
     try {
-        const response = await fetch('http://localhost:3000/api/event/');
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/event/`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -27,7 +27,7 @@ const fetch_events_data = async () => {
         for (const event of eventData) {
             if (event.game_id && !gameDataMap[event.game_id]) {
                 try {
-                    const gameResponse = await fetch(`http://localhost:3000/api/game/${event.game_id}`);
+                    const gameResponse = await fetch(`${import.meta.env.VITE_HOST}/api/game/${event.game_id}`);
                     if (gameResponse.ok) {
                         const gameJSON = await gameResponse.json();
                         gameDataMap[event.game_id] = gameJSON.data;

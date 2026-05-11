@@ -26,7 +26,7 @@ const handleCreate = async () => {
     loading.value = true;
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/api/council/create', {
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/council/create`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

@@ -17,7 +17,7 @@ const fetch_data = async () => {
     error.value = null;
 
     try {
-        const response = await fetch('http://localhost:3000/api/event');
+        const response = await fetch(`${import.meta.env.VITE_HOST}/api/event`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,7 +30,7 @@ const fetch_data = async () => {
         for (const event of events.value) {
             if (event.game_id && !gameDataMap[event.game_id]) {
                 try {
-                    const gameResponse = await fetch(`http://localhost:3000/api/game/${event.game_id}`);
+                    const gameResponse = await fetch(`${import.meta.env.VITE_HOST}/api/game/${event.game_id}`);
                     if (gameResponse.ok) {
                         const gameData = await gameResponse.json();
                         gameDataMap[event.game_id] = gameData.data;
@@ -47,7 +47,7 @@ const fetch_data = async () => {
         }));
 
     } catch (err) {
-        const errorMessage = `Failed to fetch events: ${err.message}. Make sure the server is running on http://localhost:3000`;
+        const errorMessage = `Failed to fetch`;
         console.error(errorMessage);
         error.value = errorMessage;
     } finally {
@@ -69,19 +69,23 @@ onMounted(() => {
 
         <div class="cards-container">
             <div v-if="loading" class="status-message">Loading events...</div>
-            <div v-if="error" class="error-message">{{ error }}</div>
-            <div v-if="!loading && !error && upcomingEvents.length === 0" class="status-message">No upcoming events found</div>
+            <div v-if="error" class="state-error">
+                <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+            </div>
+            <div v-if="!loading && !error && upcomingEvents.length === 0" class="status-message">No upcoming events
+                found</div>
 
-            <Card v-for="(event, index) in upcomingEvents" :key="index" :title="event.title" :description="event.description"
-                :event_type="event.event_type" :registration_fees="event.registration_fee"
-                :prize_pool="event.prize_pool" :registration_deadline="event.registration_deadline"
-                :game_icon_link="event.gameData?.logo_url" :event_id="event.id" />
+            <Card v-for="(event, index) in upcomingEvents" :key="index" :title="event.title"
+                :description="event.description" :event_type="event.event_type"
+                :registration_fees="event.registration_fee" :prize_pool="event.prize_pool"
+                :registration_deadline="event.registration_deadline" :game_icon_link="event.gameData?.logo_url"
+                :event_id="event.id" />
         </div>
     </div>
 </template>
 
 <style scoped>
-.container{
+.container {
     width: 100%;
     padding: 32px;
     text-align: center;
@@ -92,13 +96,13 @@ onMounted(() => {
     gap: 32px;
 }
 
-.heading{
+.heading {
     font-size: 44px;
     padding-top: 8px;
     border-bottom: 2px solid var(--primary-color);
 }
 
-.cards-container{
+.cards-container {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -106,13 +110,20 @@ onMounted(() => {
     gap: 20px;
 }
 
-.error-message {
+.state-error {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    margin: 0 64px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    background: rgba(255, 107, 107, 0.08);
+    border: 1px solid rgba(255, 107, 107, 0.25);
     color: #ff6b6b;
-    padding: 15px;
-    background-color: #ffe0e0;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .status-message {

@@ -27,6 +27,7 @@ import FriendsView from "../views/friends/FriendsView.vue";
 
 // ── Chat ────────────────────────────────────────────────
 import ChatView from "../views/chat/ChatView.vue";
+import EditChatView from '../views/chat/EditChat.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -125,7 +126,7 @@ const router = createRouter({
         // The :roomId param is optional — when absent the sidebar is shown
         // with an empty-state panel; when present the room is opened.
         {
-            path: '/dahsboard/chat',
+            path: '/dashboard/chats',
             name: 'chat',
             component: ChatView,
             meta: { requiresAuth: true },
@@ -138,7 +139,12 @@ const router = createRouter({
                 }
             ]
         },
-
+        {
+            path: '/dashboard/edit/chat/:id',
+            name: 'editChat',
+            component: EditChatView,
+            meta: { requiresAuth: true }
+        },
         // ── Auth ────────────────────────────────────────────
         {
             path: '/login',
