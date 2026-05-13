@@ -321,4 +321,60 @@ userRouter.patch('/update/:id', authMiddleware, checkOwnership, async (req, res)
     }
 });
 
+// ── PATCH /api/auth/me ───────────────────────────────────────────────────────
+userRouter.patch('/me', authMiddleware, async (req, res) => {
+    try {
+        const user_id = req.user._id;
+        const { username, password, full_name, phone_number, profile_pic, about_info } = req.body;
+
+        // Username uniqueness check
+        if (username) {
+            const clash = await pool.query(
+                "SELECT 1 FROM users WHERE username = $1 AND id != $2;",
+                [username, user_id]
+            );
+            if (clash.rows.length > 0) {
+                return res.status(400).json({ success: false, message: "Username not available." });
+            }
+        }
+
+        // Build dynamic SET clause
+        const fields = [];
+        const params = [];
+        let i = 1;
+
+        if (username)     { fields.push(`username = $${i++}`);     params.push(username); }
+        if (password)     { fields.push(`password_hash = $${i++}`); params.push(await bcrypt.hash(password, 10)); }
+        if (full_name)    { fields.push(`full_name = $${i++}`);    params.push(full_name); }
+        if (phone_number) { fields.push(`phone_number = $${i++}`); params.push(phone_number); }
+        if (profile_pic)  { fields.push(`profile_pic = $${i++}`);  params.push(profile_pic); }
+        if (about_info !== undefined) { fields.push(`about_info = $${i++}`); params.push(about_info); }
+
+        if (fields.length === 0) {
+            return res.status(400).json({ success: false, message: "No fields to update." });
+        }
+
+        params.push(user_id);
+        const result = await pool.query(
+            `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING *;`,
+            params
+        );
+
+        const u = result.rows[0];
+        res.status(200).json({
+            success: true,
+            message: "Profile updated.",
+            data: {
+                id: u.id, username: u.username, email: u.email,
+                full_name: u.full_name, phone_number: u.phone_number,
+                profile_pic: u.profile_pic, about_info: u.about_info,
+                account_type: u.account_type, is_verified: u.is_verified
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Internal Server Error." });
+    }
+});
+
 export default userRouter;

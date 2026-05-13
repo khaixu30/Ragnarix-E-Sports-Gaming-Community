@@ -105,6 +105,6 @@ wss.on('connection', (ws, req) => {
 
 // ── Start ────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`HTTP + WS server running → http://localhost:${PORT}`);
 });

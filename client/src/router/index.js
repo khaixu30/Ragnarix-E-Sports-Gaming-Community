@@ -14,6 +14,7 @@ import DashboardView from "../views/dashboard/DashboardView.vue";
 import DashboardProfileView from "../views/dashboard/DashboardProfileView.vue";
 import DashboardRegistrationsView from "../views/dashboard/DashboardRegistrationsView.vue";
 import DashboardSettingsView from "../views/dashboard/DashboardSettingsView.vue";
+import FriendsView from "../views/dashboard/DashboardFriendsView.vue";  // ← moved to dashboard folder
 import NotFoundView from "../views/NotFoundView.vue";
 
 // ── Council ─────────────────────────────────────────────
@@ -22,12 +23,10 @@ import CouncilDetailView from "../views/council/CouncilDetailView.vue";
 import CouncilCreateView from "../views/council/CouncilCreateView.vue";
 import CouncilDashboardView from "../views/council/CouncilDashboardView.vue";
 
-// ── Friends ─────────────────────────────────────────────
-import FriendsView from "../views/friends/FriendsView.vue";
-
-// ── Chat ────────────────────────────────────────────────
+// ── Chat (standalone full-screen layout, not inside DashboardView) ──
 import ChatView from "../views/chat/ChatView.vue";
-import EditChatView from '../views/chat/EditChat.vue';
+import EditChatView from "../views/chat/EditChat.vue";
+import DashboardHomeView from "../views/dashboard/DashboardHomeView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +87,8 @@ const router = createRouter({
         },
 
         // ── Council ─────────────────────────────────────────
+        // IMPORTANT: /council/create must be before /council/:id
+        // or "create" will be caught as an :id param
         {
             path: '/council',
             name: 'councils',
@@ -113,38 +114,30 @@ const router = createRouter({
             meta: { requiresAuth: true }
         },
 
-        // ── Friends ─────────────────────────────────────────
-        {
-            path: '/dashboard/friends',
-            name: 'friends',
-            component: FriendsView,
-            meta: { requiresAuth: true }
-        },
-
-        // ── Chat ────────────────────────────────────────────
-        // ChatView is a full layout with sidebar (room list) + outlet.
-        // The :roomId param is optional — when absent the sidebar is shown
-        // with an empty-state panel; when present the room is opened.
+        // ── Chat (full-screen, own layout — NOT inside DashboardView) ──
+        // Flattened: ChatView reads route.params.roomId directly,
+        // no need for a nested route pointing to itself
         {
             path: '/dashboard/chats',
             name: 'chat',
             component: ChatView,
-            meta: { requiresAuth: true },
-            children: [
-                {
-                    path: ':roomId',
-                    name: 'chat-room',
-                    component: ChatView,   // same component reads the param internally
-                    props: true
-                }
-            ]
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/dashboard/chats/:roomId',
+            name: 'chat-room',
+            component: ChatView,
+            props: true,
+            meta: { requiresAuth: true }
         },
         {
             path: '/dashboard/edit/chat/:id',
             name: 'editChat',
             component: EditChatView,
+            props: true,
             meta: { requiresAuth: true }
         },
+
         // ── Auth ────────────────────────────────────────────
         {
             path: '/login',
@@ -160,12 +153,19 @@ const router = createRouter({
         },
 
         // ── Dashboard (auth protected) ───────────────────────
+        // Friends and Chat are intentionally NOT children here —
+        // they use their own full-screen layouts (no dashboard sidebar).
         {
             path: '/dashboard',
             name: 'dashboard',
             component: DashboardView,
             meta: { requiresAuth: true },
             children: [
+                {
+                    path: '',           // /dashboard → default tab
+                    name: 'dashboard-home',
+                    component: DashboardHomeView
+                },
                 {
                     path: 'profile',
                     name: 'dashboard-profile',
@@ -180,6 +180,11 @@ const router = createRouter({
                     path: 'settings',
                     name: 'dashboard-settings',
                     component: DashboardSettingsView
+                },
+                {
+                    path: 'friends',
+                    name: 'friends',
+                    component: FriendsView
                 }
             ]
         },
