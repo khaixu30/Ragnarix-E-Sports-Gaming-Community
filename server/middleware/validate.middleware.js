@@ -113,3 +113,39 @@ export const validateStatusUpdate = (req, res, next) => {
 
   next();
 };
+
+// middleware/validate.middleware.js  
+
+export const validateCreateMatch = (req, res, next) => {
+  const { event_id, game_id, user_id, game_points, universal_pts } = req.body;
+  const errors = [];
+
+  if (!event_id)            errors.push("event_id is required");
+  if (!game_id)             errors.push("game_id is required");
+  if (!user_id)             errors.push("user_id is required");
+  if (game_points    == null) errors.push("game_points is required");
+  if (universal_pts  == null) errors.push("universal_pts is required");
+  if (typeof game_points   !== "number") errors.push("game_points must be a number");
+  if (typeof universal_pts !== "number") errors.push("universal_pts must be a number");
+  if (game_points   < 0)   errors.push("game_points cannot be negative");
+  if (universal_pts < 0)   errors.push("universal_pts cannot be negative");
+
+  if (errors.length) return res.status(400).json({ success: false, errors });
+  next();
+};
+
+export const validateLeaderboardQuery = (req, res, next) => {
+  const { page, limit, game_id, event_id } = req.query;
+  const errors = [];
+
+  if (page  && isNaN(parseInt(page)))  errors.push("page must be a number");
+  if (limit && isNaN(parseInt(limit))) errors.push("limit must be a number");
+
+  // UUIDs if provided must look like UUIDs
+  const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (game_id  && !uuidRe.test(game_id))  errors.push("game_id must be a valid UUID");
+  if (event_id && !uuidRe.test(event_id)) errors.push("event_id must be a valid UUID");
+
+  if (errors.length) return res.status(400).json({ success: false, errors });
+  next();
+};
