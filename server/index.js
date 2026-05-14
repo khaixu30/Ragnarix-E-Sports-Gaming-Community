@@ -17,6 +17,7 @@ import registrationRoutes from './routes/registration.routes.js';
 import messageRouter      from './routes/message.routes.js';
 
 import { registerClient, unregisterClient } from './ws/broadcast.js';
+import matchRoutes from './routes/match.routes.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use('/api/game',     gameRoutes);
 app.use('/api/register', registrationRoutes);
 app.use('/api/council',  councilRoutes);
 app.use('/api/message',  messageRouter);
+app.use('/api/match', matchRoutes)
 
 app.get('/', (_req, res) => res.send('Ragnarix API is running.'));
 
