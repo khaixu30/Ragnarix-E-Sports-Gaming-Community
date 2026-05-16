@@ -49,3 +49,27 @@ export const requireCouncilOwner = (req, res, next) => {
 
   next();
 };
+
+// middleware/permission.middleware.js  — add these to your existing file
+
+// Confirms the match row exists and attaches it to req.match
+export const requireMatchExists = async (req, res, next) => {
+  const { match_id } = req.params;
+  try {
+    const result = await pool.query("SELECT * FROM matches WHERE id = $1", [match_id]);
+    if (!result.rows.length) {
+      return res.status(404).json({ success: false, message: "Match not found" });
+    }
+    req.match = result.rows[0];
+    next();
+  } catch (err) {
+    console.error("requireMatchExists:", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Only allow the user who owns the match (or an admin) to mutate it
+export const requireMatchOwner = (req, res, next) => {
+  if (req.user.role === "admin" || req.user.id === req.match.user_id) return next();
+  res.status(403).json({ success: false, message: "Forbidden: not your match record" });
+};
