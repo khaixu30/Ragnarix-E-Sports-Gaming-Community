@@ -25,6 +25,30 @@ councilRoutes.post('/create', authMiddleware, async (req, res) => {
     }
 });
 
+// ── GET /api/councils/mine — Get current user's councils ──────────────────
+councilRoutes.get('/mine', authMiddleware, async (req, res) => {
+    try {
+        const owner_id = req.user._id;
+
+        const result = await pool.query(
+            "SELECT * FROM councils WHERE owner_id = $1 ORDER BY created_at DESC;",
+            [owner_id]
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "User's councils retrieved.",
+            data: result.rows
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+});
+
 councilRoutes.get('/all', async (req, res) => {
     try{
         const councils = await pool.query(

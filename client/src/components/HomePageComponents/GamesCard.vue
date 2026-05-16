@@ -48,7 +48,7 @@ const renderStars = (rating) => {
                         class="fa-regular fa-star star-empty"
                     ></i>
                 </div>
-                <a class="view-btn" :href="`/game/${game_id}`">
+                <a class="view-btn" :href="`/games/${game_id}`">
                     View More <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>

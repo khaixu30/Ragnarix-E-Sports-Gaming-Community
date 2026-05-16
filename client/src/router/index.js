@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import HomeView from "../views/HomeView.vue";
 import AboutView from "../views/AboutView.vue";
-import EventsView from "../views/EventsView.vue";
-import EventDetailView from "../views/EventDetailView.vue";
 import RegisterEventView from "../views/RegisterEventView.vue";
 import GamesView from "../views/GamesView.vue";
 import GameDetailView from "../views/GameDetailView.vue";
@@ -22,6 +20,13 @@ import CouncilsView from "../views/council/CouncilsView.vue";
 import CouncilDetailView from "../views/council/CouncilDetailView.vue";
 import CouncilCreateView from "../views/council/CouncilCreateView.vue";
 import CouncilDashboardView from "../views/council/CouncilDashboardView.vue";
+import CouncilEditView from '../views/council/CouncilEditView.vue';
+
+// ── Events ─────────────────────────────────────────────
+import EventEditView from "../views/events/EventEditView.vue";
+import EventRegistrationsView from "../views/events/EventRegistrationsView.vue";
+import EventsView from "../views/events/EventsView.vue";
+import EventDetailView from "../views/events/EventDetailView.vue";
 
 // ── Chat (standalone full-screen layout, not inside DashboardView) ──
 import ChatView from "../views/chat/ChatView.vue";
@@ -90,30 +95,54 @@ const router = createRouter({
         // IMPORTANT: /council/create must be before /council/:id
         // or "create" will be caught as an :id param
         {
-            path: '/council',
+            path: '/councils',
             name: 'councils',
-            component: CouncilsView
+            component: CouncilsView,
         },
         {
-            path: '/council/create',
+            path: '/councils/create',
             name: 'council-create',
             component: CouncilCreateView,
-            meta: { requiresAuth: true }
+            meta: { requiresAuth: true },
         },
         {
-            path: '/council/:id',
+            path: '/councils/:id',
             name: 'council-detail',
             component: CouncilDetailView,
-            props: true
+            props: true,
         },
         {
-            path: '/council/:id/dashboard',
+            path: '/councils/:id/dashboard',
             name: 'council-dashboard',
             component: CouncilDashboardView,
             props: true,
-            meta: { requiresAuth: true }
+            meta: { requiresAuth: true },
+            children: [
+                // Nested dashboard tabs resolved via query param ?tab=events|members|registrations
+                // OR use child routes:
+                {
+                    path: 'events/create',
+                    name: 'council-event-create',
+                    component: CouncilEditView,
+                    props: true,
+                    meta: { requiresAuth: true },
+                },
+                {
+                    path: 'events/:event_id/edit',
+                    name: 'council-event-edit',
+                    component: EventEditView,
+                    props: true,
+                    meta: { requiresAuth: true },
+                },
+                {
+                    path: 'events/:event_id/registrations',
+                    name: 'council-event-registrations',
+                    component: EventRegistrationsView,
+                    props: true,
+                    meta: { requiresAuth: true },
+                },
+            ],
         },
-
         // ── Chat (full-screen, own layout — NOT inside DashboardView) ──
         // Flattened: ChatView reads route.params.roomId directly,
         // no need for a nested route pointing to itself

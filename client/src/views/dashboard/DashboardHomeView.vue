@@ -262,7 +262,7 @@ onMounted(async () => {
                         <p class="section-label">
                             <i class="fa-solid fa-landmark"></i> Councils
                         </p>
-                        <a href="/dashboard/council" class="section-link">
+                        <a href="/councils" class="section-link">
                             View All <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
@@ -273,7 +273,7 @@ onMounted(async () => {
                     </div>
 
                     <div v-else class="councils-row" v-for="council in councils" :key="council.id"
-                        :href="`/dashboard/council/${council.id}`">
+                        :href="`/councils/${council.id}`">
                         <div class="council-card">
                             <div class="council-logo-wrap">
                                 <img :src="council.logo_url || `../../assets/games_covers/battlefield.webp`"

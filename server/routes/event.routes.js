@@ -249,4 +249,30 @@ eventRoutes.patch("/:event_id/status", authenticate, requireEventExists, require
   }
 });
 
+// ─────────────────────────────────────────────
+// DELETE /api/events/:event_id/participants/:reg_id — Remove participant
+// ─────────────────────────────────────────────
+eventRoutes.delete("/:event_id/participants/:reg_id", authenticate, requireEventExists, requireCouncilOwner, async (req, res) => {
+  const { event_id, reg_id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM registrations WHERE id = $1 AND event_id = $2 RETURNING *",
+      [reg_id, event_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Registration not found for this event"
+      });
+    }
+
+    res.json({ success: true, message: "Participant removed", registration: result.rows[0] });
+  } catch (err) {
+    console.error("Remove participant error:", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 export default eventRoutes;

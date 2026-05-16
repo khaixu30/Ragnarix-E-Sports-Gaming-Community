@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import ImageUpload from '../../components/ImageUpload.vue';
+import ImageUpload from '../../components/ImgeUpload.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -62,7 +62,7 @@ const handleUpdate = async () => {
         if (!json.success) throw new Error(json.message);
 
         success.value = 'Council updated successfully!';
-        setTimeout(() => router.push(`/dashboard/council/${council_id}`), 1200);
+        setTimeout(() => router.push(`/councils/${council_id}/dashboard`), 1200);
 
     } catch (err) {
         error.value = err.message || 'Failed to update council.';
@@ -83,7 +83,7 @@ onMounted(() => fetch_council());
                 <h1 class="dash-title">Update <span>Council</span></h1>
                 <p class="dash-subtitle">Modify your council's name, description or logo.</p>
             </div>
-            <a :href="`/dashboard/council/${council_id}`" class="btn-ghost">
+            <a :href="`/councils/${council_id}/dashboard`" class="btn-ghost">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
         </div>
@@ -146,7 +146,7 @@ onMounted(() => fetch_council());
                             <i class="fa-solid fa-spinner fa-spin"></i> Saving...
                         </span>
                     </button>
-                    <a :href="`/dashboard/council/${council_id}`" class="btn-ghost">Cancel</a>
+                    <a :href="`/councils/${council_id}/dashboard`" class="btn-ghost">Cancel</a>
                 </div>
 
             </form>

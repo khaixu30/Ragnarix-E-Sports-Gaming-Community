@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root{
-    --bg-color: #1d1d1c;
+    --bg-color: rgb(29, 29, 28);
     --bg-slight-trans-color: #2b262290;
-    --text-color: #ededed;
-    --primary-color: #bc6721;
+    --text-color: rgb(237, 237, 237);
+    --primary-color: rgb(188, 103, 33);
     --hover-color: #cf762c;
 }
 

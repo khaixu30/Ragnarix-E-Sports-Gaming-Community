@@ -190,7 +190,7 @@ CREATE TABLE products(
     stock_quantity INT DEFAULT 0, 
     discount_percent DECIMAL DEFAULT 0.0,
     is_active BOOLEAN DEFAULT TRUE,
-    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    added_on TIMESTAMP DEFAULT CURNT_TIMESTAMP
 );
 
 -- 3. Purchases
@@ -264,7 +264,7 @@ INSERT INTO team_members (team_id, user_id) VALUES
 ('ffffffff-ffff-ffff-ffff-ffffffffffff', '11111111-1111-1111-1111-111111111111'), -- Leader joins own team
 ('ffffffff-ffff-ffff-ffff-ffffffffffff', '22222222-2222-2222-2222-222222222222'); -- Pixelqueen joins
 
--- Register Team for Valorant Event
+-- a Team for Valorant Event
 -- Note: user_id here is the person who PAID/registered (Leader), team_id links the roster
 INSERT INTO registrations (event_id, user_id, team_id, payment_status) VALUES
 ('dddddddd-dddd-dddd-dddd-dddddddddddd', '11111111-1111-1111-1111-111111111111', 'ffffffff-ffff-ffff-ffff-ffffffffffff', 'Paid');
