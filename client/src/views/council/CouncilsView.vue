@@ -16,7 +16,7 @@ const filtered = () =>
 
 onMounted(async () => {
     try {
-        const res  = await fetch(`${BASE}/api/councils/all`);
+        const res  = await fetch(`${BASE}/api/council/all`);
         const json = await res.json();
         if (json.success) councils.value = json.data;
     } catch (err) {

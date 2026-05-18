@@ -166,14 +166,14 @@ CREATE TABLE registrations(
 
 -- Core matches table
 CREATE TABLE matches (
-    match_id      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    event_id      UUID  NOT NULL REFERENCES events(event_id),
-    game_id       UUID NOT NULL REFERENCES games(game_id),
-    user_id       UUID NOT NULL REFERENCES users(user_id),
-    game_points   INT NOT NULL DEFAULT 0,        -- points specific to this game
+    match_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    event_id UUID  NOT NULL REFERENCES events(event_id),
+    game_id UUID NOT NULL REFERENCES games(game_id),
+    user_id UUID NOT NULL REFERENCES users(user_id),
+    game_points INT NOT NULL DEFAULT 0,        -- points specific to this game
     universal_pts INT NOT NULL DEFAULT 0,        -- normalized points across all games
-    played_at     TIMESTAMP NOT NULL DEFAULT NOW(),
-    notes         TEXT
+    played_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    notes TEXT
 );
 
 -- Indexes for leaderboard queries

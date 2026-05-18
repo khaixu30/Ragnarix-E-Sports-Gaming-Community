@@ -36,8 +36,8 @@ const statusClass = (status) => ({
 onMounted(async () => {
     try {
         const [councilRes, membersRes, eventsRes] = await Promise.all([
-            fetch(`${BASE}/api/councils/info/${props.id}`).then(r => r.json()),
-            fetch(`${BASE}/api/councils/${props.id}/members`).then(r => r.json()),
+            fetch(`${BASE}/api/council/info/${props.id}`).then(r => r.json()),
+            fetch(`${BASE}/api/council/${props.id}/members`).then(r => r.json()),
             fetch(`${BASE}/api/events?council_id=${props.id}`).then(r => r.json()),
         ]);
         if (councilRes.success) council.value = councilRes.data;
