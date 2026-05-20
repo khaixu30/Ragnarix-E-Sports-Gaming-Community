@@ -32,6 +32,7 @@ import EventDetailView from "../views/events/EventDetailView.vue";
 import ChatView from "../views/chat/ChatView.vue";
 import EditChatView from "../views/chat/EditChat.vue";
 import DashboardHomeView from "../views/dashboard/DashboardHomeView.vue";
+import EventCreateView from "../views/events/EventCreateView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -120,13 +121,13 @@ const router = createRouter({
             children: [
                 // Nested dashboard tabs resolved via query param ?tab=events|members|registrations
                 // OR use child routes:
-                {
-                    path: 'events/create',
-                    name: 'council-event-create',
-                    component: CouncilEditView,
-                    props: true,
-                    meta: { requiresAuth: true },
-                },
+                // {
+                //     path: '/events/create',
+                //     name: 'council-event-create',
+                //     component: CouncilEditView,
+                //     props: true,
+                //     meta: { requiresAuth: true },
+                // },
                 {
                     path: 'events/:event_id/edit',
                     name: 'council-event-edit',
@@ -150,6 +151,12 @@ const router = createRouter({
             path: '/dashboard/chats',
             name: 'chat',
             component: ChatView,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/:council_id/create/events',
+            name: 'createEvents',
+            component: EventCreateView,
             meta: { requiresAuth: true }
         },
         {

@@ -182,53 +182,6 @@ CREATE INDEX idx_matches_event    ON matches(event_id);
 CREATE INDEX idx_matches_game     ON matches(game_id);
 CREATE INDEX idx_matches_uni_pts  ON matches(universal_pts DESC);
 
--- Shop & Products (3 Tables)
-
-
-
--- 1. Shops
-CREATE TABLE shops(
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    description TEXT,
-    logo_url TEXT,
-    is_verified BOOLEAN DEFAULT FALSE,
-    rent_amount DECIMAL DEFAULT 0.0, -- 0.0 = Completely free shop
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 2. Products
-CREATE TABLE products(
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    shop_id UUID REFERENCES shops(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    description TEXT,
-    images_url JSON,
-    specs JSON,
-    price DECIMAL DEFAULT 0.0, -- 0.0 = Free Item
-    stock_quantity INT DEFAULT 0, 
-    discount_percent DECIMAL DEFAULT 0.0,
-    is_active BOOLEAN DEFAULT TRUE,
-    added_on TIMESTAMP DEFAULT CURNT_TIMESTAMP
-);
-
--- 3. Purchases
-CREATE TABLE purchases(
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    buyer_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-    quantity INT DEFAULT 1,
-    unit_price DECIMAL DEFAULT 0.0,
-    total_amount DECIMAL DEFAULT 0.0,
-    status VARCHAR(20) CHECK (status IN ('Paid', 'Payment Pending', 'Shipped', 'Delivered', 'Cancelled')),
-    shipping_address TEXT,
-    purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- TOTAL TABLES = 14
-
-
 
 -- DEMO DATA INSERTION
 

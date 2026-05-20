@@ -44,7 +44,7 @@ const fetchUser = async () => {
 const fetchMyCouncils = async () => {
     loadingCouncils.value = true;
     try {
-        const res  = await fetch(`${BASE}/api/councils/mine`, { headers: authHeaders() });
+        const res  = await fetch(`${BASE}/api/council/mine`, { headers: authHeaders() });
         const json = await res.json();
         if (json.success) {
             myCouncils.value = json.data;
@@ -58,11 +58,13 @@ const fetchMyCouncils = async () => {
 };
 
 const goToDashboard = (council) => {
-    if (council.user_role === 'owner') {
-        router.push({ name: 'council-dashboard', params: { id: council.id } });
-    } else {
-        router.push({ name: 'council-detail', params: { id: council.id } });
-    }
+    // if (council.user_role === 'owner') {
+    //     // console.log(`/councils/${council.id}/dashboard`)
+    //     router.push(`/councils/${council.id}/dashboard`);
+    // } else {
+    //     router.push(`/`);
+    // }
+    router.push(`/councils/${council.id}/dashboard`)
 };
 
 const logout = () => {

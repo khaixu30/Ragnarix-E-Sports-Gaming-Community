@@ -32,7 +32,7 @@ app.use('/api/friend',   friendRouter);
 app.use('/api/room',     roomRouter);
 app.use('/api/member',   memberRouter);
 app.use('/api/team',     teamRoutes);
-app.use('/api/events',   eventRoutes);
+app.use('/api/event',   eventRoutes);
 app.use('/api/game',     gameRoutes);
 app.use('/api/register', registrationRoutes);
 app.use('/api/council',  councilRoutes);

@@ -90,7 +90,7 @@ eventRoutes.get("/", async (req, res) => {
       total: parseInt(countResult.rows[0].count),
       page: pageNum,
       limit: limitNum,
-      events: eventsResult.rows,
+      data: eventsResult.rows,
     });
   } catch (err) {
     console.error("List events error:", err);
@@ -102,7 +102,7 @@ eventRoutes.get("/", async (req, res) => {
 // GET /api/events/:event_id — Get event details
 // ─────────────────────────────────────────────
 eventRoutes.get("/:event_id", requireEventExists, (req, res) => {
-  res.json({ success: true, event: req.event });
+  res.json({ success: true, data: req.event });
 });
 
 // ─────────────────────────────────────────────
@@ -145,7 +145,7 @@ eventRoutes.patch("/:event_id", authenticate, requireEventExists, requireCouncil
       `UPDATE events SET ${updates.join(", ")} WHERE id = $${idx} RETURNING *`,
       params
     );
-    res.json({ success: true, event: result.rows[0] });
+    res.json({ success: true, data: result.rows[0] });
   } catch (err) {
     console.error("Update event error:", err);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -176,7 +176,7 @@ eventRoutes.delete("/:event_id", authenticate, requireEventExists, requireCounci
       "UPDATE events SET status = 'Cancelled' WHERE id = $1 RETURNING *",
       [event_id]
     );
-    res.json({ success: true, message: "Event cancelled", event: result.rows[0] });
+    res.json({ success: true, message: "Event cancelled", data: result.rows[0] });
   } catch (err) {
     console.error("Delete event error:", err);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -208,7 +208,7 @@ eventRoutes.get("/:event_id/participants", requireEventExists, async (req, res) 
       success: true,
       event_id,
       event_status: req.event.status,
-      participants: result.rows,
+      data: result.rows,
     });
   } catch (err) {
     console.error("Get participants error:", err);
@@ -242,7 +242,7 @@ eventRoutes.patch("/:event_id/status", authenticate, requireEventExists, require
       "UPDATE events SET status = $1 WHERE id = $2 RETURNING *",
       [status, event_id]
     );
-    res.json({ success: true, event: result.rows[0] });
+    res.json({ success: true, data: result.rows[0] });
   } catch (err) {
     console.error("Update status error:", err);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -268,7 +268,7 @@ eventRoutes.delete("/:event_id/participants/:reg_id", authenticate, requireEvent
       });
     }
 
-    res.json({ success: true, message: "Participant removed", registration: result.rows[0] });
+    res.json({ success: true, message: "Participant removed", data: result.rows[0] });
   } catch (err) {
     console.error("Remove participant error:", err);
     res.status(500).json({ success: false, message: "Internal server error" });
